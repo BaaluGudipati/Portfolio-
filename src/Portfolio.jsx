@@ -40,7 +40,7 @@ const LINKS = {
   email: "mailto:gandamsettyishwarya@gmail.com",
   github: "https://github.com/IG-08",
   linkedin: "https://linkedin.com/in/ishwarya3",
-  tableau: "https://public.tableau.com/app/profile/ishwarya.gandamsetty",
+  tableau: "https://public.tableau.com/app/profile/ishwarya.gandamsetty5407/vizzes",
 };
 
 const NAV_ITEMS = [
