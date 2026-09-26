@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
   so it resolves at /images/ishwarya-portrait.jpg.
 */
 
+
 const COLORS = {
   bg: "#0a0e2b",
   surface: "#11163f",
