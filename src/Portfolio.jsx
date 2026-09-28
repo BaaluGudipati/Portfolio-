@@ -59,7 +59,6 @@ title: ["Programming", "languages"],
 items: [
 { abbr: "Py", label: "Python" },
 { abbr: "SQL", label: "SQL" },
-{ abbr: "J", label: "Java" },
 { abbr: "JS", label: "JavaScript" },
 ],
 },
@@ -68,7 +67,7 @@ title: ["Data analytic", "tools"],
 items: [
 { abbr: "Pd", label: "Pandas" },
 { abbr: "Np", label: "NumPy" },
-{ abbr: "Sk", label: "Scikit-learn" },
+{ abbr: "Pg", label: "PostgreSQL" },
 { abbr: "Xl", label: "Excel" },
 ],
 },
@@ -83,7 +82,7 @@ items: [
 },
 ];
 
-const METHODS = ["Regression", "DBSCAN", "Neural networks", "HMM", "GridSearchCV", "EDA"];
+const METHODS = ["Regression", "Statistical analysis", "KPI analysis", "Data cleaning", "ETL", "EDA"];
 
 const PROJECTS = [
 {
@@ -91,22 +90,24 @@ number: "01",
 tag: "E-commerce analytics",
 title: "Olist e-commerce delivery & performance analytics",
 stack: ["PostgreSQL", "Python", "Tableau"],
+metrics: "~100K orders · 9-table PostgreSQL schema · 5 business questions",
 description:
 "Analyzed roughly 100K orders from Olist's Brazilian marketplace (2016–2018), answering five business questions with multi-table SQL joins across a 9-table relational schema.",
 points: [
 "Designed multi-table SQL joins across orders, payments, reviews, and logistics to answer five distinct business questions",
-"Used CTEs and window functions to show Northeast and North orders were 3 to 4 times more likely than Southeast orders to be both severely delayed and late",
+"Used CTEs to structure multi-step SQL analyses showing Northeast and North orders were 3 to 4 times more likely than Southeast orders to be both severely delayed and late",
 "Found a 70%+ higher freight-to-price ratio for those regions in the bed_bath_table category, and linked delivery lateness directly to review-score damage",
 "Built on a real 9-table PostgreSQL schema with foreign-key constraints, not a flattened CSV",
 ],
 live: "https://public.tableau.com/views/OlistE-CommercePerformanceDashboard_17902921710220/OlistE-CommercePerformanceDashboard",
-github: "https://github.com/IG-08",
+github: "https://github.com/IG-08/olist-project",
 },
 {
 number: "02",
 tag: "Public sector analytics",
 title: "NC State government budget analysis — FY2024",
 stack: ["Python", "Pandas", "Tableau"],
+metrics: "205K+ rows · 32 agencies · $73.5B in actual spend",
 description:
 "Cleaned and transformed 205,000+ rows of North Carolina government expenditure data into an interactive dashboard surfacing spending trends across 32 state agencies.",
 points: [
@@ -123,6 +124,7 @@ number: "03",
 tag: "Sports analytics",
 title: "IPL 2025 season analysis",
 stack: ["Excel", "Python", "Tableau"],
+metrics: "264 players · 10 franchises · 1 full season",
 description:
 "End-to-end Excel → Python → Tableau workflow analyzing the 2025 IPL season: player performance KPIs, team trends, and statistical anomalies across 264 players and 10 franchises.",
 points: [
@@ -138,13 +140,14 @@ github: "https://github.com/IG-08/ipl-2025-analysis",
 number: "04",
 tag: "Full-stack application",
 title: "SafeBites — AI-powered food discovery",
-stack: ["React", "FastAPI", "MongoDB", "LangGraph"],
+stack: ["React", "TailwindCSS", "REST APIs"],
+metrics: "4-person team · React frontend · deployed live",
+liveLabel: "Live demo",
 description:
-"Full-stack platform using AI-driven semantic search to help users find menu items by dietary preference and allergen restriction. Built on a 4-person team; led the React frontend and the Python analytics layer.",
+"Full-stack platform using AI-driven semantic search to help users find menu items by dietary preference and allergen restriction. Built on a 4-person team, where I built the React frontend.",
 points: [
-"Built the React frontend on a 4-person team and integrated it against a FastAPI backend with a MongoDB data layer",
-"Built semantic menu search with LangGraph and FAISS — natural-language queries return correct results",
-"Found allergen filtering used in over 60% of sessions, confirming it as the core user need",
+"Built the responsive React and TailwindCSS frontend for conversational menu search and allergen filtering",
+"Integrated the UI with the team's FastAPI backend and MongoDB data layer over REST APIs, where LangGraph and FAISS power the semantic search",
 "Deployed live at se-wolfcafe.vercel.app",
 ],
 live: "https://se-wolfcafe.vercel.app",
@@ -155,6 +158,8 @@ number: "05",
 tag: "Product strategy",
 title: "Yelp product teardown",
 stack: ["Product Strategy", "UX Research"],
+metrics: "5 initiatives · RICE-scored · journey map + priority matrix",
+liveLabel: "Live site",
 description:
 "An end-to-end teardown of Yelp's local-discovery experience from an international student's perspective, identifying where the product breaks down and what to do about it.",
 points: [
@@ -172,7 +177,7 @@ const EDUCATION = [
 {
 initials: "NC",
 school: "North Carolina State University",
-detail: "M.S. Computer Science (2025 — Present) · GPA 3.22",
+detail: "M.S. Computer Science (2025 — Present)",
 note: "Statistical Models for System Analytics · Trustworthy AI · Intro to Product Development",
 },
 {
@@ -547,6 +552,7 @@ I help turn raw data into{" "}
 View projects
 </PillButton>
 <PillButton href={LINKS.github}>GitHub</PillButton>
+<PillButton href={LINKS.linkedin}>LinkedIn</PillButton>
 </div>
 </div>
 
@@ -616,14 +622,15 @@ I'm <span style={{ color: COLORS.accent }}>Ishwarya!</span>
 <p style={{ fontSize: 17, color: COLORS.textSecondary, margin: "0 0 28px" }}>
 <strong style={{ color: COLORS.accent }}>Data analyst</strong> and{" "}
 <strong style={{ color: COLORS.accent }}>M.S. Computer Science candidate</strong> at NC
-State University, with hands-on experience across{" "}
+State University, using{" "}
 <strong style={{ color: COLORS.accent }}>
-Python, SQL, Pandas, Scikit-learn, Tableau, and Power BI
+SQL, Python, Tableau, Power BI, and Excel
 </strong>{" "}
-for end-to-end data analysis and visualization. Comfortable with data cleaning,
-statistical analysis, dashboard creation, and communicating insights clearly — from
-a multi-billion-dollar government budget underspend to an entire cricket season's
-worth of player stats.
+to clean data, analyze performance, build dashboards, and communicate actionable
+insights, from a multi-billion-dollar government budget underspend to an entire
+cricket season's worth of player stats. My projects span e-commerce operations,
+public-sector spending, sports analytics, and product strategy, each built around a
+business question.
 </p>
 <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
 <PillButton onClick={() => scrollToId("projects")}>Projects</PillButton>
@@ -878,6 +885,11 @@ margin: "0 0 8px",
 <h3 style={{ fontFamily: FONT_HEAD, fontWeight: 700, fontSize: 22, margin: "0 0 14px" }}>
 {project.title}
 </h3>
+{project.metrics && (
+<p style={{ fontFamily: FONT_HEAD, fontWeight: 600, fontSize: 13.5, color: COLORS.textSecondary, margin: "-6px 0 14px" }}>
+{project.metrics}
+</p>
+)}
 <p style={{ fontSize: 16, color: COLORS.textSecondary, margin: "0 0 16px" }}>
 {project.description}
 </p>
@@ -927,7 +939,7 @@ padding: "5px 12px",
 ))}
 </div>
 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-<PillButton href={project.live}>Live dashboard</PillButton>
+<PillButton href={project.live}>{project.liveLabel || "Live dashboard"}</PillButton>
 <PillButton href={project.github}>GitHub</PillButton>
 </div>
 </div>
