@@ -168,7 +168,7 @@ points: [
 "Proposed 5 improvement initiatives, each RICE-scored and tied to a measurable success metric",
 "Published a full teardown write-up, a journey map, and a priority matrix alongside the repo",
 ],
-live: "https://gandamsetty-ishwarya.netlify.app/",
+live: "https://portfolio-ishwarya6.vercel.app/yelp-teardown-case-study.html",
 github: "https://github.com/IG-08/yelp-product-teardown",
 },
 ];
