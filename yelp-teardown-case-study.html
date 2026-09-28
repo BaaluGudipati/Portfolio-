@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yelp is great if you already know your city | Product teardown by Ishwarya Gandamsetty</title>
+<meta name="description" content="A product teardown of Yelp's local discovery experience, seen through an international student's move between Raleigh and Hyderabad, with five prioritized improvement proposals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #F5F7FA;
+  --surface: #FFFFFF;
+  --ink: #1C2333;
+  --muted: #58627A;
+  --rule: #D8DDE6;
+  --good: #0F6E56;
+  --good-bg: #E1F5EE;
+  --good-ink: #085041;
+  --pain: #993C1D;
+  --pain-bg: #FAECE7;
+  --pain-ink: #712B13;
+  --accent: #534AB7;
+  --accent-bg: #EEEDFE;
+  --accent-ink: #3C3489;
+  --accent-on: #FFFFFF;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --text: "Source Serif 4", Georgia, "Iowan Old Style", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151C;
+    --surface: #1A1E28;
+    --ink: #E8EAF0;
+    --muted: #A3ABBD;
+    --rule: #2C3242;
+    --good: #5DCAA5;
+    --good-bg: #0F2A24;
+    --good-ink: #9FE1CB;
+    --pain: #F0997B;
+    --pain-bg: #33201A;
+    --pain-ink: #F5C4B3;
+    --accent: #AFA9EC;
+    --accent-bg: #25224A;
+    --accent-ink: #CECBF6;
+    --accent-on: #14112E;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.125rem/1.72 var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent-ink); text-underline-offset: 0.18em; }
+a:hover { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); color: var(--ink); margin: 0; }
+
+.hero { max-width: 72rem; margin: 0 auto; padding: clamp(3rem, 9vw, 6.5rem) 1.5rem 2.5rem; }
+.hero h1 { font-size: clamp(2.6rem, 6.4vw, 4.75rem); line-height: 1.02; letter-spacing: -0.025em; font-weight: 700; max-width: 15ch; }
+.dek { font-size: 1.3rem; line-height: 1.55; color: var(--muted); max-width: 38rem; margin: 1.5rem 0 0; }
+.byline { font-family: var(--display); font-weight: 500; margin: 1.75rem 0 0; }
+
+.layout { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem 4rem; display: grid; grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3.5rem; }
+.toc { position: sticky; top: 2rem; align-self: start; font-family: var(--display); font-size: 0.95rem; line-height: 1.35; }
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--rule); }
+.toc a { display: block; padding: 0.45rem 0 0.45rem 1rem; margin-left: -1px; border-left: 3px solid transparent; color: var(--muted); text-decoration: none; }
+.toc a:hover { color: var(--ink); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); font-weight: 700; }
+main { max-width: 42rem; }
+@media (max-width: 62rem) {
+  .layout { display: block; }
+  .toc { display: none; }
+}
+
+main section { padding-top: 3.5rem; }
+main section:first-child { padding-top: 0.5rem; }
+main h2 { font-size: 1.9rem; line-height: 1.15; letter-spacing: -0.01em; font-weight: 700; margin-bottom: 1.1rem; }
+main h2 .num { color: var(--muted); font-weight: 500; margin-right: 0.5rem; }
+main h3 { font-size: 1.3rem; line-height: 1.25; font-weight: 700; margin: 2rem 0 0.5rem; }
+main p { margin: 0 0 1.15rem; }
+strong { font-weight: 600; }
+
+.terms { margin: 1.5rem 0 0; padding: 0; }
+.terms dt { font-family: var(--display); font-weight: 700; font-size: 1.05rem; margin-top: 1.25rem; }
+.terms dd { margin: 0.2rem 0 0; }
+.terms + p { margin-top: 1.25rem; }
+
+.journey { list-style: none; margin: 1.75rem 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.journey li { position: relative; padding: 0.9rem 1rem; border: 1px solid; border-radius: 8px; font-family: var(--display); line-height: 1.3; }
+.journey li strong { display: block; font-weight: 700; font-size: 1.05rem; }
+.journey li span { font-size: 0.95rem; }
+.journey .good { background: var(--good-bg); border-color: var(--good); color: var(--good-ink); }
+.journey .pain { background: var(--pain-bg); border-color: var(--pain); color: var(--pain-ink); }
+.journey li:not(:last-child)::after {
+  content: ""; position: absolute; right: -1.35rem; top: 50%; width: 0.7rem; height: 0.7rem;
+  border-top: 2px solid var(--muted); border-right: 2px solid var(--muted); transform: translateY(-50%) rotate(45deg);
+}
+@media (max-width: 40rem) {
+  .journey { grid-template-columns: 1fr; gap: 1.6rem; }
+  .journey li:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -1.15rem; transform: translateX(-50%) rotate(135deg); }
+}
+
+.proposal { margin-top: 2.25rem; }
+.proposal h3 { margin-top: 0; }
+.proposal p { margin-bottom: 0.8rem; }
+.proposal .metric { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--ink); }
+
+.scroller { overflow-x: auto; margin: 1.5rem 0 2rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 34rem; font-family: var(--display); font-size: 0.98rem; line-height: 1.35; }
+th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+thead th { font-weight: 700; color: var(--muted); font-size: 0.9rem; }
+tbody tr:last-child td { border-bottom: 0; }
+td.prio { font-weight: 700; white-space: nowrap; }
+
+.matrix { margin: 2rem 0 0.75rem; }
+.matrix svg { display: block; width: 100%; height: auto; overflow: visible; }
+.matrix .axis { stroke: var(--muted); stroke-width: 1.5; }
+.matrix .divider { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 4 5; }
+.matrix .lbl { fill: var(--muted); font: 500 12.5px var(--display); }
+.matrix .quad { fill: var(--muted); opacity: 0.8; font: 500 12.5px var(--display); }
+.matrix .pt { cursor: pointer; }
+.matrix .pt circle { fill: var(--accent-bg); stroke: var(--accent); stroke-width: 1.5; transition: fill 0.15s, r 0.15s; }
+.matrix .pt text { fill: var(--accent-ink); font: 700 14px var(--display); pointer-events: none; transition: fill 0.15s; }
+.matrix .pt:hover circle { fill: var(--accent); }
+.matrix .pt:hover text { fill: var(--accent-on); }
+.matrix .pt.is-selected circle { fill: var(--accent); r: 17; }
+.matrix .pt.is-selected text { fill: var(--accent-on); }
+
+.picker { list-style: none; margin: 1.25rem 0; padding: 0; display: grid; gap: 0.5rem; }
+.picker button {
+  width: 100%; display: flex; gap: 0.75rem; align-items: baseline; text-align: left; cursor: pointer;
+  font: 500 1rem/1.35 var(--display); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 8px; padding: 0.7rem 0.9rem;
+}
+.picker button:hover { border-color: var(--muted); }
+.picker button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-ink); font-weight: 700; }
+.picker .n { flex: none; min-width: 1.1rem; color: var(--muted); font-weight: 700; }
+.picker button[aria-pressed="true"] .n { color: var(--accent-ink); }
+
+.detail { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.15rem 1.25rem; }
+.detail h3 { margin: 0 0 0.35rem; font-size: 1.2rem; }
+.detail p { margin: 0 0 0.75rem; }
+.detail .metric { font-size: 1rem; color: var(--muted); }
+.detail .metric strong { color: var(--ink); }
+.pill { display: inline-block; font: 700 0.85rem/1 var(--display); background: var(--accent-bg); color: var(--accent-ink); border-radius: 999px; padding: 0.35rem 0.7rem; margin-bottom: 0.7rem; }
+.rice { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin: 0.9rem 0 0; font-family: var(--display); }
+.rice div { border-top: 1px solid var(--rule); padding-top: 0.45rem; }
+.rice dt { font-size: 0.85rem; color: var(--muted); }
+.rice dd { margin: 0; font-weight: 700; }
+@media (max-width: 34rem) { .rice { grid-template-columns: repeat(2, 1fr); } }
+.note { font-size: 0.95rem; color: var(--muted); margin-top: 0.9rem; }
+
+footer { border-top: 1px solid var(--rule); }
+footer div { max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem 3rem; font-family: var(--display); color: var(--muted); }
+footer p { margin: 0 0 0.4rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .matrix .pt circle, .matrix .pt text { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Yelp is great if you already know your city</h1>
+  <p class="dek">I'm an international student who lives between Raleigh and Hyderabad. This is my teardown of Yelp for people like me, plus five things I'd change and how I'd decide which to do first.</p>
+  <p class="byline">By Ishwarya Gandamsetty</p>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Sections">
+    <ol>
+      <li><a href="#overview">1. Product overview</a></li>
+      <li><a href="#users">2. Target users and goals</a></li>
+      <li><a href="#journey">3. User journey</a></li>
+      <li><a href="#works">4. What works well</a></li>
+      <li><a href="#friction">5. Pain points</a></li>
+      <li><a href="#proposals">6. Improvement proposals</a></li>
+      <li><a href="#priorities">7. Prioritization</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section id="context">
+      <p>When I landed in Raleigh for my M.S. in Computer Science in Fall 2025, Yelp was one of the first apps I downloaded. I didn't know anywhere. I didn't know which restaurants were good, which areas were fine, or who to ask. I figured Yelp would fill that gap.</p>
+      <p>Mostly it did. Then I went home to Hyderabad and it didn't. That gap is what this teardown is about. I've used the app in both cities, and I checked what I saw against Yelp's app store listings, its public company disclosures and its product docs. For every problem I found, I've tried to suggest a fix and a way to measure whether it worked. A list of complaints isn't much use to a product team on its own.</p>
+    </section>
+
+    <section id="overview">
+      <h2><span class="num">1.</span>Product overview</h2>
+      <p>Yelp is a marketplace with two sides. People use it to find and review local businesses: restaurants, plumbers, dentists, car shops. Businesses use it to get found, take bookings and leads, and keep an eye on their reputation.</p>
+      <p>The app matters less than what's behind it, which is more than 200 million reviews collected since 2004. Those reviews are why a Yelp result feels more trustworthy than a pin on a map.</p>
+      <p>Over the years Yelp has folded a bunch of separate jobs into one app: search and filters, reviews and photos, table reservations, delivery and pickup, and requesting quotes from service pros. It makes its money mostly from advertising, plus paid leads for home-service businesses. So consumers use it for free, and the paying customer is the local business buying visibility.</p>
+      <p>Where it's strong is the US, Canada, the UK and a few European countries. Yelp has tried to grow elsewhere (and pulled back from a number of international markets around 2016) but never got enough reviews in those places for the app to be useful. I think that one fact explains more of what follows than anything else.</p>
+    </section>
+
+    <section id="users">
+      <h2><span class="num">2.</span>Target users and goals</h2>
+      <p>Yelp says its audience is anyone looking for a local business. In practice I see three kinds of people.</p>
+      <dl class="terms">
+        <dt>The local regular</dt>
+        <dd>Has lived in the city for years. Already knows which neighborhoods are which and what a fair price looks like. Opens Yelp to settle one decision, like which ramen place is open right now. Yelp is built for this person, and there are enough reviews and enough local context that it works.</dd>
+        <dt>The business owner</dt>
+        <dd>Runs a listing, replies to reviews, and pays for ads or leads. This is where Yelp's money comes from.</dd>
+        <dt>The newcomer</dt>
+        <dd>Just moved, or is traveling, or is an international student like me. A newcomer isn't only looking for the best place nearby. They're missing what a local just knows: who to trust, what "good" means here, and whether a place that looks fine online actually is.</dd>
+      </dl>
+      <p>What I wanted was pretty simple. I wanted to find food and services I could trust without having anyone to ask, and I didn't want to learn a different app every time I flew between the US and India.</p>
+      <p>Yelp is clearly designed around the first two people. It treats the newcomer as a slightly less experienced local regular, and most of my problems come from that.</p>
+    </section>
+
+    <section id="journey">
+      <h2><span class="num">3.</span>User journey walkthrough</h2>
+      <ol class="journey" aria-label="Three stages of the journey">
+        <li class="good"><strong>Week one, Raleigh</strong><span>Trusted, fast</span></li>
+        <li class="pain"><strong>Trip to Hyderabad</strong><span>Sparse coverage</span></li>
+        <li class="good"><strong>Back in Raleigh</strong><span>Works well again</span></li>
+      </ol>
+      <h3>Week one in Raleigh</h3>
+      <p>I open Yelp, allow location, and search "Indian restaurants near me." I get a list with star ratings, a price level and a few review snippets. I filter by rating and "open now," pick one, and skim the reviews.</p>
+      <p>That's where I get stuck. The reviews are in English and written by people I know nothing about. Is a 4-star "great food" from someone who's tried a dozen Indian places around the Triangle, or someone's first ever? I can't tell. I go anyway. If it's good I might check in or leave a review later. Haircut, oil change, dentist, it's the same loop: search, filter, skim, decide.</p>
+      <h3>A visit home to Hyderabad</h3>
+      <p>Then I visit home, open the same app out of habit, and search for a restaurant near my parents' place. The results are thin. A few listings, most with hardly any reviews, some with old hours or photos. That's not a glitch. It's just how far Yelp's coverage goes.</p>
+      <p>So I close it and open Zomato or Google Maps, like nearly everyone there does. My saved places, my review history, my sense of how to read a Yelp rating: none of it comes with me.</p>
+      <h3>Back in Raleigh</h3>
+      <p>When I'm back, Yelp works again. Nothing about the app changed. I did, twice in a few weeks, and Yelp doesn't notice. There's one version of the product, built for one kind of person in one kind of place, and everyone else works around it or stops using it.</p>
+    </section>
+
+    <section id="works">
+      <h2><span class="num">4.</span>What works well</h2>
+      <p>In its home markets, Yelp deserves its spot on my home screen.</p>
+      <dl class="terms">
+        <dt>Filters</dt>
+        <dd>Distance, price, rating, hours and category filters are quick and they stack well. That matters when you just need to decide in the next two minutes.</dd>
+        <dt>Reviews, where there are lots of them</dt>
+        <dd>In a big US city there are enough reviews to spot the outliers and read between the lines. It's the closest thing to a local friend's opinion, which is the whole pitch.</dd>
+        <dt>Booking in the same app</dt>
+        <dd>You can reserve a table or order pickup from the page where you found the place. That saves a trip to another app.</dd>
+        <dt>Everything on one page</dt>
+        <dd>Hours, menu, photos, contact info and reviews are in one place, so I need fewer tabs open before I decide.</dd>
+        <dt>Saved lists</dt>
+        <dd>Saving places for later helps a lot when you're new. You build a list faster than you can visit anything.</dd>
+      </dl>
+      <p>None of this is a big surprise next to Yelp's competitors. But it's done well, and it's why I still open Yelp first in Raleigh.</p>
+    </section>
+
+    <section id="friction">
+      <h2><span class="num">5.</span>Pain points and friction</h2>
+      <dl class="terms">
+        <dt>Coverage drops off outside a few markets</dt>
+        <dd>This is the big one, and it isn't something a UI tweak fixes. Yelp only has real review depth in the US, Canada, the UK and parts of Europe. In India, Zomato and Google got there first and Yelp never caught up. If your life is split across two of those places, Yelp isn't a weaker version of itself in India. It feels like a different, much thinner app with the same icon.</dd>
+        <dt>Nothing follows you across borders</dt>
+        <dd>My saved lists, my review history, and my feel for what a 4-star means in this city all stay put. Yelp only cares where I am right now. It doesn't know where I'm from or where I'll be next month.</dd>
+        <dt>The dietary filters are too blunt</dt>
+        <dd>The vegetarian filter doesn't separate vegetarian from vegan, and there's nothing for Jain food. "Indian" is treated as one cuisine when it's a dozen or more regional ones. If you eat according to specific cultural or religious rules, the filter looks precise but isn't.</dd>
+        <dt>Reviews assume you know who's writing</dt>
+        <dd>A review is only useful if you can judge the reviewer. Locals do that without thinking. A newcomer can't, because Yelp doesn't show who's writing: a longtime resident, a tourist, someone who eats like me or someone who doesn't.</dd>
+        <dt>No help for people who just arrived</dt>
+        <dd>Someone who's lived here ten years and someone who arrived ten hours ago get the same first screen. There's no "I'm new here" mode with the basics: which areas are busy, some starter lists, how ratings tend to run in this city.</dd>
+        <dt>Ads make it harder to trust</dt>
+        <dd>This one isn't only about newcomers. Sponsored results take up more and more of the space organic ones used to have, and some service-business owners have complained publicly about the quality of Request a Quote leads. A newcomer is the worst placed to spot the difference, since they have no idea what a normal Yelp results page looks like.</dd>
+      </dl>
+    </section>
+
+    <section id="proposals">
+      <h2><span class="num">6.</span>Improvement proposals</h2>
+      <p>Each idea is small enough for one product team to take on. None needs Yelp to reinvent itself, and each comes with a metric so you'd know if it worked.</p>
+
+      <article class="proposal">
+        <h3>1. Granular dietary and cultural filters</h3>
+        <p>Go beyond vegetarian and vegan. Add Jain and halal, and regional cuisine tags (South Indian, North Indian, Indo-Chinese, for example). Let restaurants tag themselves, and check those tags against what reviewers say.</p>
+        <p class="metric"><strong>Success metric.</strong> How many food searchers use the new filters, and whether those searches lead to a visit more often than searches with the old filter.</p>
+      </article>
+
+      <article class="proposal">
+        <h3>2. "New to the city" mode</h3>
+        <p>An opt-in mode. It could switch on when someone searches a lot in a market they've never used Yelp in, or when they tap "I'm new here." It would show starter lists for the area, a short neighborhood guide, and a quick note on how ratings tend to run locally.</p>
+        <p class="metric"><strong>Success metric.</strong> Seven-day retention and how many people book something in their first days, compared with similar new-market users who don't get the mode.</p>
+      </article>
+
+      <article class="proposal">
+        <h3>3. Reviewer context labels</h3>
+        <p>An optional label on reviews that shows who wrote them, like "regular reviewer in this city" or "visiting." It gives a newcomer the context a local reads instinctively.</p>
+        <p class="metric"><strong>Success metric.</strong> How often people mark labeled reviews helpful compared with unlabeled ones, and fewer support disputes about reviews.</p>
+      </article>
+
+      <article class="proposal">
+        <h3>4. Cross-border profile continuity ("travel mode")</h3>
+        <p>When Yelp sees someone has changed countries, it should bring their saved lists, review history and rating context with them. And if they've landed somewhere with thin coverage, it should say so instead of quietly showing worse results.</p>
+        <p class="metric"><strong>Success metric.</strong> Seven-day return rate after a country change, compared with today, when the drop-off is silent.</p>
+      </article>
+
+      <article class="proposal">
+        <h3>5. Local data partnerships in high-diaspora markets</h3>
+        <p>Yelp shouldn't try another expensive launch in India. A better bet is a data-sharing or co-listing deal with a local platform that's already dominant. Start in cities with lots of returning students, visa holders and NRIs, who already use Yelp somewhere else.</p>
+        <p class="metric"><strong>Success metric.</strong> Growth in listings and reviews per listing in the pilot cities, and how often diaspora users go from search to action.</p>
+      </article>
+    </section>
+
+    <section id="priorities">
+      <h2><span class="num">7.</span>Prioritization</h2>
+      <p>I scored each idea on reach, impact, confidence and effort, roughly following RICE. I treat effort as a cost, not a divisor, so the table stays easy to read.</p>
+
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr><th>Proposal</th><th>Reach</th><th>Impact</th><th>Confidence</th><th>Effort</th><th>Priority</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Granular dietary and cultural filters</td><td>High</td><td>Medium</td><td>High</td><td>Low</td><td class="prio">P0, do first</td></tr>
+            <tr><td>"New to the city" mode</td><td>Medium</td><td>High</td><td>High</td><td>Medium</td><td class="prio">P1</td></tr>
+            <tr><td>Reviewer context labels</td><td>High</td><td>Medium</td><td>Medium</td><td>Medium</td><td class="prio">P1</td></tr>
+            <tr><td>Cross-border profile continuity</td><td>Low to medium</td><td>High</td><td>Medium</td><td>High</td><td class="prio">P2</td></tr>
+            <tr><td>Local data partnerships</td><td>Low (near term)</td><td>High (long term)</td><td>Low</td><td>High</td><td class="prio">P3, strategic bet</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The table hides something the chart makes obvious: none of these five is a low-impact idea. What separates them is how much work they take. Pick one to see where it sits and why.</p>
+
+      <div class="matrix">
+        <svg id="matrix" viewBox="0 0 680 480" role="img" aria-label="Effort versus impact chart. Five proposals are plotted; use the list below the chart to select one.">
+          <defs>
+            <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <line class="divider" x1="370" y1="50" x2="370" y2="430"/>
+          <line class="divider" x1="100" y1="240" x2="640" y2="240"/>
+          <line class="axis" x1="100" y1="430" x2="100" y2="50" marker-end="url(#arrowhead)"/>
+          <line class="axis" x1="100" y1="430" x2="640" y2="430" marker-end="url(#arrowhead)"/>
+          <text class="lbl" x="90" y="58" text-anchor="end">High impact</text>
+          <text class="lbl" x="90" y="428" text-anchor="end">Low impact</text>
+          <text class="lbl" x="100" y="454" text-anchor="start">Low effort</text>
+          <text class="lbl" x="640" y="454" text-anchor="end">High effort</text>
+          <text class="quad" x="112" y="66" text-anchor="start">Quick wins</text>
+          <text class="quad" x="628" y="66" text-anchor="end">Major projects</text>
+          <text class="quad" x="112" y="418" text-anchor="start">Fill-ins</text>
+          <text class="quad" x="628" y="418" text-anchor="end">Reconsider</text>
+          <g id="points"></g>
+        </svg>
+      </div>
+
+      <ul class="picker" id="picker" aria-label="Proposals"></ul>
+
+      <div class="detail" id="detail" aria-live="polite"></div>
+      <p class="note">I placed these by judgment, relative to each other. It isn't measured data.</p>
+
+      <h3>Why this order</h3>
+      <p>Better dietary and cultural filters come first. It builds on a feature people already use, needs little beyond a tag list and restaurants tagging themselves, and you can measure it straight away. Onboarding mode and reviewer labels are next. Both go straight at the newcomer problem for a fair amount of work, and neither has to wait for Yelp to solve international coverage. Cross-border continuity is valuable but reaches deeper into accounts and data, so I'd do it after newcomer mode has been proven in one market. The partnership idea matters most to someone like me, because it's the only one that fixes the India side. It's also a multi-quarter bet across several teams, with real risk, so I'd treat it as a strategic project on the roadmap, not something for the next sprint.</p>
+
+      <h3>Closing note</h3>
+      <p>Yelp is really good for people who already know their city. It's a lot worse for people who don't yet, or who move between two. That's not a rare case. International students, people who've just moved, and families spread across countries are a big group, and they tend to need answers right now. Fixing this wouldn't turn Yelp into a different company. It would mean giving the newcomer a place in a product that currently only has room for one kind of user.</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div>
+    <p>Ishwarya Gandamsetty, M.S. Computer Science, NC State University</p>
+    <p>Part of my <a href="https://portfolio-ishwarya6.vercel.app">product and data portfolio</a>. Written teardown and diagrams on <a href="https://github.com/IG-08/yelp-product-teardown">GitHub</a>. Find me on <a href="https://www.linkedin.com/in/ishwarya3">LinkedIn</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var proposals = [
+    { id: 1, name: "Granular dietary and cultural filters", x: 208, y: 202, prio: "P0, do first",
+      why: "The easiest win. It builds on a feature people already use and needs little beyond a tag list and restaurants tagging themselves.",
+      metric: "How many food searchers use the new filters, and whether those searches lead to a visit more often than with the old filter.",
+      rice: { Reach: "High", Impact: "Medium", Confidence: "High", Effort: "Low" } },
+    { id: 2, name: "\u201cNew to the city\u201d mode", x: 392, y: 126, prio: "P1",
+      why: "It goes straight at the newcomer problem for a moderate amount of work, and it doesn't have to wait for Yelp to fix international coverage.",
+      metric: "Seven-day retention and early bookings for the new-market cohort, against similar users without the mode.",
+      rice: { Reach: "Medium", Impact: "High", Confidence: "High", Effort: "Medium" } },
+    { id: 3, name: "Reviewer context labels", x: 348, y: 202, prio: "P1",
+      why: "Also built for newcomers at moderate cost. It lets people judge a review when they can't judge the reviewer.",
+      metric: "How often labeled reviews are marked helpful versus unlabeled ones, and fewer review-related support disputes.",
+      rice: { Reach: "High", Impact: "Medium", Confidence: "Medium", Effort: "Medium" } },
+    { id: 4, name: "Cross-border profile continuity", x: 532, y: 126, prio: "P2",
+      why: "Valuable, but it reaches deeper into accounts and data, so it comes after newcomer mode is proven in one market.",
+      metric: "Seven-day return rate after a country change, against today's silent drop-off.",
+      rice: { Reach: "Low to medium", Impact: "High", Confidence: "Medium", Effort: "High" } },
+    { id: 5, name: "Local data partnerships", x: 586, y: 88, prio: "P3, strategic bet",
+      why: "The only idea that fixes the India side. Also a multi-quarter bet across teams, with real risk.",
+      metric: "Listing and review growth in pilot cities, plus how often diaspora users go from search to action.",
+      rice: { Reach: "Low (near term)", Impact: "High (long term)", Confidence: "Low", Effort: "High" } }
+  ];
+
+  var NS = "http://www.w3.org/2000/svg";
+  var pointsLayer = document.getElementById("points");
+  var picker = document.getElementById("picker");
+  var detail = document.getElementById("detail");
+  var pointEls = {}, buttonEls = {};
+
+  proposals.forEach(function (p) {
+    var g = document.createElementNS(NS, "g");
+    g.setAttribute("class", "pt");
+    g.setAttribute("aria-hidden", "true");
+    var c = document.createElementNS(NS, "circle");
+    c.setAttribute("cx", p.x); c.setAttribute("cy", p.y); c.setAttribute("r", 14);
+    var t = document.createElementNS(NS, "text");
+    t.setAttribute("x", p.x); t.setAttribute("y", p.y);
+    t.setAttribute("text-anchor", "middle"); t.setAttribute("dominant-baseline", "central");
+    t.textContent = p.id;
+    g.appendChild(c); g.appendChild(t);
+    g.addEventListener("click", function () { select(p.id); });
+    pointsLayer.appendChild(g);
+    pointEls[p.id] = g;
+
+    var li = document.createElement("li");
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    var n = document.createElement("span"); n.className = "n"; n.textContent = p.id + ".";
+    var label = document.createElement("span"); label.textContent = p.name;
+    b.appendChild(n); b.appendChild(label);
+    b.addEventListener("click", function () { select(p.id); });
+    li.appendChild(b); picker.appendChild(li);
+    buttonEls[p.id] = b;
+  });
+
+  function select(id) {
+    var p = proposals.filter(function (q) { return q.id === id; })[0];
+    proposals.forEach(function (q) {
+      var on = q.id === id;
+      pointEls[q.id].classList.toggle("is-selected", on);
+      buttonEls[q.id].setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    pointsLayer.appendChild(pointEls[id]);
+    var riceHtml = Object.keys(p.rice).map(function (k) {
+      return "<div><dt>" + k + "</dt><dd>" + p.rice[k] + "</dd></div>";
+    }).join("");
+    detail.innerHTML =
+      '<span class="pill">' + p.prio + "</span>" +
+      "<h3>" + p.id + ". " + p.name + "</h3>" +
+      "<p>" + p.why + "</p>" +
+      '<p class="metric"><strong>Success metric.</strong> ' + p.metric + "</p>" +
+      '<dl class="rice">' + riceHtml + "</dl>";
+  }
+  select(1);
+
+  var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          var i = sections.indexOf(e.target);
+          links.forEach(function (a, j) {
+            if (j === i) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+          });
+        }
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    sections.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
